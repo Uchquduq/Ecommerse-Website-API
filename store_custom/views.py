@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.db.models import Value, F, Func
 from django.db.models.functions import Concat
 from django.db.models.aggregates import Count, Max, Min, Avg, Sum
-
+from django.contrib.contenttypes.models import ContentType
+from tags.models import TaggedItem
 from store.models import Order, Product, OrderItem, Customer
 
 
@@ -47,18 +48,20 @@ def say_hello(request):
     # queryset = Customer.objects.annotate(
     #     full_name=Concat('first_name', Value(' '), 'last_name')
     # )
-    queryset = Customer.objects.annotate(
-        orders_count=Count('order')
-    )
+    # queryset = Customer.objects.annotate(
+    #     orders_count=Count('order')
+    # )
 
+
+    queryset = TaggedItem.objects.get_tags_for(Product, 11)
 
 
     context = {
         # "orders" : list(orders),
         # 'product': product,
         # 'result': result,
-        'result': list(queryset)
-
+        # 'result': list(queryset)
+        'tags': queryset,
     }
     return render(request, 'example.html', context)
 
