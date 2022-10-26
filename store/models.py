@@ -12,6 +12,7 @@ class Collection(models.Model):
     featured_product = models.ForeignKey(
         'Product', on_delete=models.SET_NULL, null=True, blank=True, related_name="+") # when 2 models are connected in a circle relationship, if it says related name, you should add + to related name
 
+
 class Product(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField()
@@ -20,7 +21,7 @@ class Product(models.Model):
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
-    promotions = models.ManyToManyField(Promotion) # related_name="products"
+    promotions = models.ManyToManyField(Promotion, blank=True) # related_name="products"
  
 
 class Customer(models.Model):
@@ -40,6 +41,8 @@ class Customer(models.Model):
     birth_date = models.DateField(null=True)
     membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
 
 class Order(models.Model):
     PAYMENT_STATUS_PENDING = 'P'
@@ -54,7 +57,7 @@ class Order(models.Model):
     placed_at = models.DateTimeField(auto_now_add=True)
     payment_status = models.CharField(max_length=1, default=PAYMENT_STATUS_PENDING, choices=PAYMENT_STATUS_CHOICES)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
-  
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
