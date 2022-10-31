@@ -1,11 +1,11 @@
 from django.shortcuts import render
+from django.db import transaction
 from django.db.models import Value, F, Func, ExpressionWrapper, DecimalField
 from django.db.models.functions import Concat
 from django.db.models.aggregates import Count, Max, Min, Avg, Sum
 from django.contrib.contenttypes.models import ContentType
 from tags.models import TaggedItem
 from store.models import Order, Product, OrderItem, Customer
-
 
 
 def say_hello(request):
@@ -57,21 +57,35 @@ def say_hello(request):
     # queryset = Product.objects.annotate(
     #     discounted_price=discounted_price
     # )
-    content_type = ContentType.objects.get_for_model(Product)
+    # content_type = ContentType.objects.get_for_model(Product)
 
-    queryset = TaggedItem.objects \
-        .select_related('tag') \
-        .filter(
-            content_type=content_type,
-            object_id=1
-        )
+    # queryset = TaggedItem.objects \
+    #     .select_related('tag') \
+    #     .filter(
+    #         content_type=content_type,
+    #         object_id=1
+    #     )
+    #               Tramsactions
+    with transaction.atomic():
+
+        order = Order()
+        order.customer_id = 1
+        order.save()
+
+        item = OrderItem()
+        item.order = order
+        item.product_id = 1
+        item.quantity = 1
+        item.unit_price = 10
+        item.save()
+
 
     context = {
         # "orders" : list(orders),
         # 'product': product,
         # 'result': result,
         # 'result': list(queryset)
-        'tags': queryset,
+        # 'tags': queryset,
     }
     return render(request, 'example.html', context)
 
