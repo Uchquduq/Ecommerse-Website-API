@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.db.models import Value, F, Func
+from django.db.models import Value, F, Func, ExpressionWrapper, DecimalField
 from django.db.models.functions import Concat
 from django.db.models.aggregates import Count, Max, Min, Avg, Sum
 from django.contrib.contenttypes.models import ContentType
@@ -51,10 +51,20 @@ def say_hello(request):
     # queryset = Customer.objects.annotate(
     #     orders_count=Count('order')
     # )
+    # discounted_price = ExpressionWrapper(
+    #     F('unit_price') * 0.8, output_field=DecimalField()
+    # )
+    # queryset = Product.objects.annotate(
+    #     discounted_price=discounted_price
+    # )
+    content_type = ContentType.objects.get_for_model(Product)
 
-
-    queryset = TaggedItem.objects.get_tags_for(Product, 11)
-
+    queryset = TaggedItem.objects \
+        .select_related('tag') \
+        .filter(
+            content_type=content_type,
+            object_id=1
+        )
 
     context = {
         # "orders" : list(orders),
@@ -64,5 +74,6 @@ def say_hello(request):
         'tags': queryset,
     }
     return render(request, 'example.html', context)
+
 
 
