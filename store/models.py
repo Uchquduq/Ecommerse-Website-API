@@ -6,11 +6,16 @@ class Promotion(models.Model):
     discount = models.FloatField()
     # product_set
 
+    # def __str__(self):
+    #     return self.description
 
 class Collection(models.Model):
     title = models.CharField(max_length=255)
     featured_product = models.ForeignKey(
         'Product', on_delete=models.SET_NULL, null=True, blank=True, related_name="+") # when 2 models are connected in a circle relationship, if it says related name, you should add + to related name
+
+    def __str__(self):
+        return self.title
 
 
 class Product(models.Model):
@@ -22,7 +27,9 @@ class Product(models.Model):
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
     promotions = models.ManyToManyField(Promotion, blank=True) # related_name="products"
- 
+
+    def __str__(self):
+        return self.title   
 
 class Customer(models.Model):
     MEMBERSHIP_BRONZE = "Bronze"
@@ -34,6 +41,7 @@ class Customer(models.Model):
         ('S', MEMBERSHIP_SILVER),
         ('G', MEMBERSHIP_GOLD),
     )
+
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
@@ -58,19 +66,29 @@ class Order(models.Model):
     payment_status = models.CharField(max_length=1, default=PAYMENT_STATUS_PENDING, choices=PAYMENT_STATUS_CHOICES)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
+    # def __str__(self):
+    #     return self.customer.first_name
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveSmallIntegerField()
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
-  
+
+    # def __str__(self):
+    #     return f"{self.order} ordered {self.product}"
+
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField()
+
+    # def __str__(self):
+    #     return f"{self.cart} {self.product}"
 
 class Address(models.Model):
     street = models.CharField(max_length=255)
@@ -78,3 +96,5 @@ class Address(models.Model):
     customer = models.ForeignKey(
         Customer, on_delete=models.CASCADE)
 
+    # def __str__(self):
+    #     return f"{self.customer} address: {self.street}, {self.city}"

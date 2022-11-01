@@ -5,7 +5,7 @@ from django.db.models.functions import Concat
 from django.db.models.aggregates import Count, Max, Min, Avg, Sum
 from django.contrib.contenttypes.models import ContentType
 from tags.models import TaggedItem
-from store.models import Order, Product, OrderItem, Customer
+from store.models import Order, Product, OrderItem, Customer, Collection
 
 
 def say_hello(request):
@@ -51,40 +51,46 @@ def say_hello(request):
     # queryset = Customer.objects.annotate(
     #     orders_count=Count('order')
     # )
+    # queryset = Collection.objects.annotate(
+    #     products_count=Count('product')
+    # )
+    # This query calculates the product price including tax
+
     # discounted_price = ExpressionWrapper(
     #     F('unit_price') * 0.8, output_field=DecimalField()
     # )
     # queryset = Product.objects.annotate(
     #     discounted_price=discounted_price
     # )
-    # content_type = ContentType.objects.get_for_model(Product)
 
-    # queryset = TaggedItem.objects \
-    #     .select_related('tag') \
-    #     .filter(
-    #         content_type=content_type,
-    #         object_id=1
-    #     )
+    content_type = ContentType.objects.get_for_model(Product)
+
+    queryset = TaggedItem.objects \
+        .select_related('tag') \
+        .filter(
+            content_type=content_type,
+            object_id=1
+        )
+
     #               Tramsactions
-    with transaction.atomic():
+    # with transaction.atomic():
 
-        order = Order()
-        order.customer_id = 1
-        order.save()
+    #     order = Order()
+    #     order.customer_id = 2
+    #     order.save()
 
-        item = OrderItem()
-        item.order = order
-        item.product_id = 1
-        item.quantity = 1
-        item.unit_price = 10
-        item.save()
-
+    #     item = OrderItem()
+    #     item.order = order
+    #     item.product_id = 2
+    #     item.quantity = 2
+    #     item.unit_price = 10
+    #     item.save()
 
     context = {
         # "orders" : list(orders),
         # 'product': product,
         # 'result': result,
-        # 'result': list(queryset)
+        'result': list(queryset)
         # 'tags': queryset,
     }
     return render(request, 'example.html', context)
