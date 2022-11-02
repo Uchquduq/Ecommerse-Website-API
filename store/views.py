@@ -1,5 +1,12 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet 
+from store.serializers import *
+from store.models import Product
 
-def home(request):
-    context = {}
-    return render(request, 'index.html', context)
+class ProductViewSet(ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class CollectionViewSet(ModelViewSet):
+    queryset = Collection.objects.all()
+    serializer_class = CollectionSerializer
