@@ -95,5 +95,3 @@ def say_hello(request):
     }
     return render(request, 'example.html', context)
 
-
-
