@@ -1,6 +1,7 @@
-from rest_framework.viewsets import ModelViewSet 
+from rest_framework.viewsets import ModelViewSet
 from store.serializers import *
-from store.models import Product
+from store.models import Product, Collection
+
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
@@ -8,5 +9,5 @@ class ProductViewSet(ModelViewSet):
 
 
 class CollectionViewSet(ModelViewSet):
-    queryset = Collection.objects.all()
+    queryset = Collection.objects.annotate(products_count=Count("product"))
     serializer_class = CollectionSerializer
