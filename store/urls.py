@@ -1,10 +1,15 @@
-from rest_framework.routers import DefaultRouter
-from pprint import pprint
+from rest_framework_nested import routers
 from store import views
 
-router = DefaultRouter()
-router.register('products', views.ProductViewSet)
-router.register('collections', views.CollectionViewSet)
-pprint(router.urls)
-urlpatterns = router.urls
+router = routers.DefaultRouter()
+router.register("products", views.ProductViewSet)
+router.register("collections", views.CollectionViewSet)
 
+products_router = routers.NestedDefaultRouter(router, 'products', lookup='product')
+
+products_router.register('reviews', views.ReviewViewSet, basename='product-reviews')
+
+
+# URL Conf
+
+urlpatterns = router.urls + products_router.urls
