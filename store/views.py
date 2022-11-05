@@ -1,8 +1,11 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from store.pagination import DefaultPagination
 from store.serializers import *
 from store.models import *
 from store.filters import ProductFilter
@@ -11,9 +14,11 @@ from store.filters import ProductFilter
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend] # after i'm gonna write what filters use to filtering 
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter] # after i'm gonna write what filters use to filtering 
     filterset_fields = ['collection_id']
+    pagination_class = DefaultPagination
     filterset_class = ProductFilter
+    search_fields = ['title', 'description']
 
     # def get_queryset(self):
     #     queryset = Product.objects.all()

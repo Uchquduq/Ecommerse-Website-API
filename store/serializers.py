@@ -24,7 +24,7 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "price", "collection", "price_with_tax"]
 
     def calculate_tax(self, product: Product):
-        return product.unit_price * Decimal(1.1)
+        return round(product.unit_price * Decimal(1.1), 2)
 
     # def validate(self, data):
     #     if data['password'] != data['confirm_password']:
