@@ -1,24 +1,42 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from store.pagination import DefaultPagination
+from rest_framework.mixins import (
+    CreateModelMixin,
+    RetrieveModelMixin,
+    DestroyModelMixin,
+    ListModelMixin,
+)
 from store.serializers import *
 from store.models import *
 from store.filters import ProductFilter
+
+ 
+class CartViewSet(
+    CreateModelMixin, ListModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet
+):
+
+    queryset = Cart.objects.prefetch_related("items").all()
+    serializer_class = CartSerializer
 
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter] # after i'm gonna write what filters use to filtering 
-    filterset_fields = ['collection_id']
+    filter_backends = [
+        DjangoFilterBackend,
+        SearchFilter,
+        OrderingFilter,
+    ]  # after i'm gonna write what filters use to filtering
+    filterset_fields = ["collection_id"]
     pagination_class = DefaultPagination
     filterset_class = ProductFilter
-    search_fields = ['title', 'description']
+    search_fields = ["title", "description"]
 
     # def get_queryset(self):
     #     queryset = Product.objects.all()

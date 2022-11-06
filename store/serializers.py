@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.db.models.aggregates import Count
 from rest_framework import serializers
-from store.models import Product, Collection, Review
+from store.models import Product, Collection, Review, Cart, CartItem
 
 
 class CollectionSerializer(serializers.ModelSerializer):
@@ -45,6 +45,12 @@ class ProductSerializer(serializers.ModelSerializer):
         return instance
 
 
+class SimpleProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ["id", "title", "unit_price"]
+
+
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
@@ -53,3 +59,28 @@ class ReviewSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         product_id = self.context["product_id"]
         return Review.objects.create(product_id=product_id, **validated_data)
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product = SimpleProductSerializer()
+    total_price = serializers.SerializerMethodField()
+
+    def get_total_price(self, cart_item):
+        return cart_item.quantity * cart_item.product.unit_price
+
+    class Meta:
+        model = CartItem
+        fields = ["id", "product", "quantity", 'total_price']
+
+
+class CartSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
+    items = CartItemSerializer(many=True, read_only=True)
+    total_price = serializers.SerializerMethodField()
+
+    def get_total_price(self, cart):
+        return sum([item.quantity * item.product.unit_price for item in cart.items.all()])
+
+    class Meta:
+        model = Cart
+        fields = ["id", "items", 'total_price']
