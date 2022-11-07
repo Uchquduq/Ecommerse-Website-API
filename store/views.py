@@ -16,10 +16,12 @@ from store.serializers import *
 from store.models import *
 from store.filters import ProductFilter
 
- 
-class CartViewSet(
-    CreateModelMixin, ListModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet
-):
+
+class CartViewSet(CreateModelMixin,
+                  ListModelMixin,
+                  RetrieveModelMixin,
+                  DestroyModelMixin,
+                  GenericViewSet):
 
     queryset = Cart.objects.prefetch_related("items__product").all()
     serializer_class = CartSerializer
@@ -30,15 +32,16 @@ class CartItemViewSet(ModelViewSet):
     serializer_class = CartItemSerializer
 
     def get_queryset(self):
-        return CartItem.objects \
-            .filter(cart_id=self.kwargs.get('cart_pk')) \
-            .select_related('product')
+        return CartItem.objects.filter(
+            cart_id=self.kwargs["cart_pk"]
+        ).select_related("product")
+
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [
-        DjangoFilterBackend,    
+        DjangoFilterBackend,
         SearchFilter,
         OrderingFilter,
     ]  # after i'm gonna write what filters use to filtering
