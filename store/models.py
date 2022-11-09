@@ -51,7 +51,9 @@ class Customer(models.Model):
         ("S", MEMBERSHIP_SILVER),
         ("G", MEMBERSHIP_GOLD),
     )
-
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField()
     phone = models.CharField(max_length=255)
     birth_date = models.DateField(null=True, blank=True)
     membership = models.CharField(
@@ -138,3 +140,4 @@ class Review(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     date = models.DateField(auto_now_add=True)
+
