@@ -24,17 +24,21 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(models.Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'membership']
+    list_display = ['first_name', 'last_name', 'membership', 'orders_count']
     list_editable = ['membership']
-    ordering = ['user__first_name', 'user__last_name']
     list_per_page = 10
-    list_select_related = ['user']
+    ordering = ['user__first_name', 'user__last_name']
+    search_fields = ['first_name', 'last_name']
 
-    def first_name(self):
-        return self.user.first_name
+    @admin.display(ordering='orders_count')
+    def orders_count(self, customer):
+        return customer.orders_count
+        
 
-    def last_name(self):
-        return self.user.last_name
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            orders_count = Count('order')
+        )
 
 # admin.site.register(models.Customer)
 admin.site.register(models.Promotion)
@@ -55,7 +59,7 @@ class CollectionAdmin(admin.ModelAdmin):
             + '?'
             + urlencode({
                 'collection__id': str(collection.id)
-            }))  
+            }))
         return format_html('<a href="{}">{}</a>', url, collection.products_count)
         
 
