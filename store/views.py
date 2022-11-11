@@ -11,6 +11,7 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     DestroyModelMixin,
     ListModelMixin,
+    UpdateModelMixin
 )
 from store.serializers import *
 from store.models import *
@@ -104,3 +105,8 @@ class ReviewViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Review.objects.filter(product_id=self.kwargs["product_pk"])
+
+
+class CustomerViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
