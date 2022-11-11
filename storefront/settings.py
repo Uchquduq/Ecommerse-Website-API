@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "debug_toolbar",
     "drf_yasg",
+    'djoser',
 
 
     "tags",
@@ -158,6 +159,19 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+
+}
+
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
+}
+
+DJOSER = {
+    'SERIALIZERS': {
+        'user_create': 'core.serializers.UserCreateSerializer',}
 }
 
 AUTH_USER_MODEL = 'core.User'
