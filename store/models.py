@@ -1,3 +1,4 @@
+from django.contrib import admin
 from django.db import models
 from django.core.validators import MinValueValidator
 from uuid import uuid4
@@ -66,6 +67,7 @@ class Customer(models.Model):
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
+    @admin.display(ordering='user__first_name')
     def first_name(self):
         return self.user.first_name
 
