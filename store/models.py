@@ -5,6 +5,8 @@ from uuid import uuid4
 
 from django.conf import settings
 
+# Completed Django Authentication System
+
 
 # Promotion  - Product M2M
 class Promotion(models.Model):
