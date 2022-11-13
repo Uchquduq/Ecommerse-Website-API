@@ -181,6 +181,7 @@ class CreateOrderSerializer(serializers.Serializer):
 
             Cart.objects.filter(pk=cart_id).delete()
 
+            return order
 
+# tepadagi kodda qachon customer yaratilsa u bilan birgalikda bitta vaqtda customer ham yaratiladi.
 
-        # tepadagi kodda qachon customer yaratilsa u bilan birgalikda bitta vaqtda customer ham yaratiladi.
