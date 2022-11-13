@@ -5,7 +5,13 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny, DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly
+from rest_framework.permissions import (
+    IsAuthenticated,
+    IsAdminUser,
+    AllowAny,
+    DjangoModelPermissions,
+    DjangoModelPermissionsOrAnonReadOnly,
+)
 from rest_framework.response import Response
 from store.pagination import DefaultPagination
 from rest_framework.mixins import (
@@ -13,44 +19,45 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     DestroyModelMixin,
     ListModelMixin,
-    UpdateModelMixin
+    UpdateModelMixin,
 )
 from store.serializers import *
 from store.models import *
 from store.filters import ProductFilter
 from store.permissions import *
 
-class CartViewSet(CreateModelMixin,
-                  ListModelMixin,
-                  RetrieveModelMixin,
-                  DestroyModelMixin,
-                  GenericViewSet):
+
+class CartViewSet(
+    CreateModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    DestroyModelMixin,
+    GenericViewSet,
+):
 
     queryset = Cart.objects.prefetch_related("items__product").all()
     serializer_class = CartSerializer
 
+
 # all done
 class CartItemViewSet(ModelViewSet):
-    http_method_names = ['get', 'post', 'patch', 'delete']
+    http_method_names = ["get", "post", "patch", "delete"]
     serializer_class = CartItemSerializer
 
     def get_serializer_class(self):
-        if self.request.method == 'POST':
+        if self.request.method == "POST":
             return AddCartItemSerializer
-        elif self.request.method == 'PATCH':
+        elif self.request.method == "PATCH":
             return UpdateCartItemSerializer
         return CartItemSerializer
 
     def get_queryset(self):
-        return CartItem.objects.filter(
-            cart_id=self.kwargs["cart_pk"]
-        ).select_related("product")
+        return CartItem.objects.filter(cart_id=self.kwargs["cart_pk"]).select_related(
+            "product"
+        )
 
     def get_serializer_context(self):
-        return {'cart_id': self.kwargs['cart_pk']}
-
-
-
+        return {"cart_id": self.kwargs["cart_pk"]}
 
 
 class ProductViewSet(ModelViewSet):
@@ -122,22 +129,33 @@ class CustomerViewSet(ModelViewSet):
     @action(detail=True, permission_classes=[ViewCustomerHistoryPermission])
     def history(self, request, pk):
         return Response("OK")
-        
 
-    @action(detail=False, methods=['GET', 'PUT'])
+    @action(detail=False, methods=["GET", "PUT"])
     def me(self, request):
-        # request.user # AnonymousUser 
+        # request.user # AnonymousUser
         (customer, created) = Customer.objects.get_or_create(user_id=request.user.id)
-        if request.method == 'GET':
+        if request.method == "GET":
             serializer = CustomerSerializer(customer)
             return Response(serializer.data)
-        elif request.method == 'PUT':
+        elif request.method == "PUT":
             serializer = CustomerSerializer(customer, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
- # Now can Get or update current user profile
+
+
+# Now can Get or update current user profile
+
 
 class OrderViewSet(ModelViewSet):
-    queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_staff:
+            return Order.objects.all()
+
+        (customer_id, created) = Customer.objects.only("id").get_or_create(user_id=user.id)
+        return Order.objects.filter(customer_id=customer_id)
