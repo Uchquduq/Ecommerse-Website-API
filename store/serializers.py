@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.db import transaction
 from django.db.models.aggregates import Count
+from store.signals import order_created
 from rest_framework import serializers
 from store.models import *
 
@@ -174,7 +175,7 @@ class CreateOrderSerializer(serializers.Serializer):
         # print(self.context["user_id"])
         with transaction.atomic():
             cart_id = self.validated_data['cart_id']
-            (customer, created) = Customer.objects.get_or_create(
+            customer = Customer.objects.get(
                 user_id=self.context["user_id"]
             )
             print(customer)
@@ -193,6 +194,9 @@ class CreateOrderSerializer(serializers.Serializer):
             OrderItem.objects.bulk_create(order_items)
 
             Cart.objects.filter(pk=cart_id).delete()
+
+
+            order_created.send_robust(self.__class__, order=order)
 
             return order
 
