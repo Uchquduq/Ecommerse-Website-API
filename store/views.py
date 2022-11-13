@@ -113,11 +113,16 @@ class CustomerViewSet(ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
-  
+
     # def get_permissions(self):
     #     if self.request.method == 'GET':
     #         return [AllowAny()]
     #     return [IsAuthenticated()]
+
+    @action(detail=True, permission_classes=[ViewCustomerHistoryPermission])
+    def history(self, request, pk):
+        return Response("OK")
+        
 
     @action(detail=False, methods=['GET', 'PUT'])
     def me(self, request):
