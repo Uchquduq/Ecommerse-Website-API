@@ -5,9 +5,12 @@ from store.signals import order_created
 from rest_framework import serializers
 from store.models import *
 
+# Serializers allow complex data such as querysets and model instances to be 
+# converted to native Python datatypes that can then be easily rendered into JSON, 
+# XML or other content types
+
 
 class CollectionSerializer(serializers.ModelSerializer):
-    # products_count = serializers.SerializerMethodField(method_name='get_products_count')
     products_count = serializers.IntegerField(read_only=True)
 
     class Meta:
