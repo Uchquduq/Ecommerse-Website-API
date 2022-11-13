@@ -8,6 +8,7 @@ from rest_framework import serializers
 
 
 class UserCreateSerializer(BaseUserCreateSerializer):
+    """ Overriding user create serializer """
 
     class Meta(BaseUserCreateSerializer.Meta):
 
@@ -15,5 +16,7 @@ class UserCreateSerializer(BaseUserCreateSerializer):
                    'email', 'first_name', 'last_name']
 
 class UserSerializer(BaseUserSerializer):
+    """ Overriding current user serializer """
+
     class Meta(BaseUserSerializer.Meta):
         fields = ['id', 'email', 'username', 'first_name', 'last_name']
