@@ -38,18 +38,23 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_filters",
-    "rest_framework",
-    "debug_toolbar",
-    "drf_yasg",
-    'djoser',
 
-
+    # Apps
     "tags",
     "likes",
     "store",
     "core",
 ]
+
+INSTALLED_LIBRARIES = [
+    "django_filters",
+    "rest_framework",
+    "debug_toolbar",
+    "drf_yasg",
+    'djoser',
+]
+
+INSTALLED_APPS += INSTALLED_LIBRARIES
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -63,9 +68,10 @@ MIDDLEWARE = [
 ]
 
 INTERNAL_IPS = [
-    # ...
+    """ A list of IP addresses """
+
     "127.0.0.1",
-    # ...
+
 ]
 
 ROOT_URLCONF = "storefront.urls"
@@ -88,18 +94,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "storefront.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
+#            Settings to mysql database
 DATABASES = {
+
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "storefront3",
@@ -108,9 +105,6 @@ DATABASES = {
         "PASSWORD": "fazliddin2002",
     }
 }
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -128,9 +122,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -142,23 +133,19 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "static/"
 MEDIA_URL = "/media/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+# Use Django's standard `django.contrib.auth` permissions,
+# or allow read-only access for unauthenticated users.
 REST_FRAMEWORK = {
     "COERCE_DECIMAL_TO_STRING": False,
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
