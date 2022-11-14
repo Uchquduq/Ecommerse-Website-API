@@ -84,6 +84,7 @@ admin.site.register(models.OrderItem)
 admin.site.register(models.Cart)
 admin.site.register(models.CartItem)
 admin.site.register(models.Address)
+admin.site.register(models.Review)
 
 
 @admin.register(models.Collection)
