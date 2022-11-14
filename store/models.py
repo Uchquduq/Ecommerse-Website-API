@@ -7,15 +7,16 @@ from django.conf import settings
 
 # Promotion  - Product M2M
 class Promotion(models.Model):
+    """
+        Promotion for products
+
+    """
     description = models.CharField(max_length=255)
     discount = models.FloatField()
-    # product_set
-
-    # def __str__(self):
-    #     return self.description
-
 
 class Collection(models.Model):
+    """ Category for products """
+
     title = models.CharField(max_length=255)
     featured_product = models.ForeignKey(
         "Product", on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
@@ -26,6 +27,7 @@ class Collection(models.Model):
 
 
 class Product(models.Model):
+    """ Product(item) """
     title = models.CharField(max_length=255)
     slug = models.SlugField()
     description = models.TextField()
@@ -46,6 +48,7 @@ class Product(models.Model):
 
 
 class Customer(models.Model):
+    """ Customer in platform """
     MEMBERSHIP_BRONZE = "Bronze"
     MEMBERSHIP_SILVER = "Silver"
     MEMBERSHIP_GOLD = "Gold"
@@ -81,6 +84,7 @@ class Customer(models.Model):
 
 
 class Order(models.Model):
+    """ Order of the customer """
     PAYMENT_STATUS_PENDING = "P"
     PAYMENT_STATUS_COMPLETE = "C"
     PAYMENT_STATUS_FAILED = "F"
@@ -106,6 +110,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    """ Ordered Items of the customers order """
     order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='items')
     product = models.ForeignKey(
         Product, on_delete=models.PROTECT, related_name="orderitems"
@@ -120,11 +125,13 @@ class OrderItem(models.Model):
 
 
 class Cart(models.Model):
+    """ Cutomers cart to convert sales, payments, transactions ... """
     id = models.UUIDField(primary_key=True, default=uuid4)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class CartItem(models.Model):
+    """ Items added to cart by customer  """
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)])
@@ -137,6 +144,7 @@ class CartItem(models.Model):
 
 
 class Address(models.Model):
+    """ Customer Address"""
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -146,10 +154,10 @@ class Address(models.Model):
 
 
 class Review(models.Model):
+    """ Review model for products page """
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="reviews"
     )
     name = models.CharField(max_length=255)
     description = models.TextField()
     date = models.DateField(auto_now_add=True)
-
