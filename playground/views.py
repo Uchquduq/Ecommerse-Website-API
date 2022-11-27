@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.core.mail import mail_admins, send_mail, BadHeaderError, EmailMessage
+from templated_mail.mail import BaseEmailMessage
 from django.db import transaction
 from django.db.models import Value, F, Func, ExpressionWrapper, DecimalField
 from django.db.models.functions import Concat
@@ -19,8 +21,8 @@ def say_hello(request):
     # queryset = Product.objects.order_by("unit_price")
     # limiting results
     # queryset = Product.objects.all()[:5]
-    # 
-    # queryset = OrderItem.objects.values('product_id')    
+    #
+    # queryset = OrderItem.objects.values('product_id')
     # queryset = Product.objects.filter(id__in=OrderItem.objects.values('product_id').distinct()).order_by('title')
 
     # deffering fields
@@ -29,7 +31,7 @@ def say_hello(request):
     # queryset = Product.objects.defer('description')
     # select related
     # queryset = Product.objects.select_related('collection').all()
-    
+
     # queryset = Product.objects.prefetch_related(
     #     'promotions').select_related('collection').all()
     # Select last 5 orders and their customer with their items(incl product)
@@ -42,7 +44,7 @@ def say_hello(request):
     # queryset = Customer.objects.annotate(new_id=F('id'))
     # queryset = Customer.objects.annotate(
     #     # CONCAT
-    #     full_name = Func(F('first_name'), Value(' '), 
+    #     full_name = Func(F('first_name'), Value(' '),
     #         F('last_name'), function='CONCAT')
     # )
     # queryset = Customer.objects.annotate(
@@ -63,14 +65,14 @@ def say_hello(request):
     #     discounted_price=discounted_price
     # )
 
-    content_type = ContentType.objects.get_for_model(Product)
+    # content_type = ContentType.objects.get_for_model(Product)
 
-    queryset = TaggedItem.objects \
-        .select_related('tag') \
-        .filter(
-            content_type=content_type,
-            object_id=1
-        )
+    # queryset = TaggedItem.objects \
+    #     .select_related('tag') \
+    #     .filter(
+    #         content_type=content_type,
+    #         object_id=1
+    #     )
 
     #               Tramsactions
     # with transaction.atomic():
@@ -85,13 +87,46 @@ def say_hello(request):
     #     item.quantity = 2
     #     item.unit_price = 10
     #     item.save()
+    try:
+        # mail_admins('subject', 'message', html_message='message')
+        message = EmailMessage(
+                'subject', 
+                'message', 
+                settings.DEFAULT_FROM_EMAIL, 
+                ['abduhakimovfazliddin2002@gmail.com'])
+        # message.attach_file('playground/static/images/dog.jpg')
+        message.send()
+
+
+        # message = BaseEmailMessage(
+        #     template_name="emails/hello.html", context={"name": "a"}
+        # )
+        # message.send(["abduhakimovfazliddin2002@gmail.com"])
+
+    except BadHeaderError:
+        pass
 
     context = {
         # "orders" : list(orders),
         # 'product': product,
         # 'result': result,
-        'result': list(queryset)
+        # 'result': list(queryset)
         # 'tags': queryset,
     }
-    return render(request, 'example.html', context)
+    return render(request, "emails/hello.html", context)
+
+
+from django.conf import settings
+
+
+def send_mail_message(request):
+    message = request.POST.get('message')
+    
+    if request.method == "POST":
+        send_mail('Contact Form', 
+            message, 
+            settings.EMAIL_HOST_USER, 
+            ['abduhakimovfazliddin2002@gmail.com'],
+            fail_silently=False)
+    return render(request, "emails/send_email.html")
 

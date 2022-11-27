@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "likes",
     "store",
     "core",
+    'playground',
 ]
 
 INSTALLED_LIBRARIES = [
@@ -79,7 +80,7 @@ ROOT_URLCONF = "storefront.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -166,3 +167,16 @@ DJOSER = {
 
 AUTH_USER_MODEL = 'core.User'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_USER = 'abduhakimovfazliddin2002@gmail.com'
+EMAIL_HOST_PASSWORD = 'fazliddin2002'
+EMAIL_PORT = 2525
+DEFAULT_FROM_EMAIL = 'fazliddinabduhakimov9@gmail.com'
+
+# EMAIL_HOST = 'smtp.zoho.com'
+# EMAIL_HOST_USER = 'abduhakimovfazliddin2002@gmail.com'
+# EMAIL_HOST_PASSWORD = 'fazliddin2002'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
