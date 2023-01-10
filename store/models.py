@@ -56,6 +56,11 @@ class Product(models.Model):
         verbose_name = 'Products'
         verbose_name_plural = 'Product'
 
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(upload_to="store/images")
+    
+
 class Customer(models.Model):
     """Customer in platform"""
 
@@ -191,4 +196,3 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Reviews'
         verbose_name_plural = 'Review'
-
