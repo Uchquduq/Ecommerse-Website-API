@@ -18,15 +18,28 @@ class CollectionSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "products_count"]
 
 
+
+class ProductImageSerializer(serializers.ModelSerializer):
+
+    def create(self, validated_data):
+        product_id = self.context.get('product_id')
+        return ProductImage.objects.create(product_id=product_id, **validated_data)
+
+    class Meta:
+        model = ProductImage
+        fields = ['id', 'image']
+
+
 class ProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True)
     price_with_tax = serializers.SerializerMethodField(method_name="calculate_tax")
-    price = serializers.DecimalField(
-        max_digits=6, decimal_places=2, source="unit_price"
-    )
+    # price = serializers.DecimalField(
+    #     max_digits=6, decimal_places=2, source="unit_price"
+    # )
 
     class Meta:
         model = Product
-        fields = ["id", "title", "price", "collection", "price_with_tax"]
+        fields = ["id", "title", "description", "slug", "inventory", "unit_price", "collection", "price_with_tax", "images"]
 
     def calculate_tax(self, product: Product):
         return round(product.unit_price * Decimal(1.1), 2)
@@ -202,16 +215,6 @@ class CreateOrderSerializer(serializers.Serializer):
             order_created.send_robust(self.__class__, order=order)
 
             return order
-
-class ProductImageSerializer(serializers.ModelSerializer):
-
-    def create(self, validated_data):
-        product_id = self.context.get('product_id')
-        return ProductImage.objects.create(product_id=product_id, **validated_data)
-
-    class Meta:
-        model = ProductImage
-        fields = ['id', 'image']
 
 # tepadagi kodda qachon customer yaratilsa u bilan birgalikda bitta vaqtda customer ham yaratiladi.
 
