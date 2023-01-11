@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    
     "django.contrib.admin",
     
     "django.contrib.auth",
@@ -46,19 +47,35 @@ INSTALLED_APPS = [
     "store",
     "core",
     'playground',
+    
 ]
 
 INSTALLED_LIBRARIES = [
     "django_filters",
     "rest_framework",
-    "debug_toolbar",
     "drf_yasg",
     'djoser',
+    'corsheaders',
+    "debug_toolbar",
 ]
 
 INSTALLED_APPS += INSTALLED_LIBRARIES
 
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
+
+
+# Corsheaders able to run 2 servers together with added ports
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8001',
+    'http://127.0.0.1:8001',
+]
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -67,15 +84,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
     
 ]
 
-INTERNAL_IPS = [
-    """ A list of IP addresses """
-
-    "127.0.0.1",
-
-]
 
 ROOT_URLCONF = "storefront.urls"
 
@@ -182,3 +194,4 @@ DEFAULT_FROM_EMAIL = 'fazliddinabduhakimov9@gmail.com'
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+

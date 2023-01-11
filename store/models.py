@@ -1,9 +1,11 @@
 from django.contrib import admin
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, FileExtensionValidator
 from uuid import uuid4
 
 from django.conf import settings
+
+from store.validators import validate_file_size
 
 # Promotion  - Product M2M
 class Promotion(models.Model):
@@ -56,10 +58,20 @@ class Product(models.Model):
         verbose_name = 'Products'
         verbose_name_plural = 'Product'
 
+
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
-    image = models.ImageField(upload_to="store/images")
-    
+    image = models.ImageField(
+        upload_to="store/images",
+        validators=[validate_file_size]
+    )
+
+    # Checking file
+    # file = models.FileFIeld(
+    #     upload_to='store/images',
+    #     validators=[FileExtensionValidator(allowed_extensions=['pdf'])]
+    # )
+
 
 class Customer(models.Model):
     """Customer in platform"""

@@ -25,9 +25,19 @@ class TagInline(GenericTabularInline):
     autocomplete_fields = ['tag']
     model = tags_models.TaggedItem
 
+class ProductImageInline(admin.TabularInline):
+    model = models.ProductImage
+    readonly_fields = ['thumbnail']
+
+    def thumbnail(self, instance):
+        if instance.image.name != '':
+            return format_html(f'<img src="{instance.image.url}" class="thumbnail" />')
+        return ''
+
+
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [TagInline]
+    inlines = [ProductImageInline]
     autocomplete_fields = ['collection']
     prepopulated_fields = {
         'slug': ['title']
@@ -57,6 +67,12 @@ class ProductAdmin(admin.ModelAdmin):
             f"{updated_count} products were successfully updated.",
             messages.SUCCESS
         )
+
+    # media klass orqali barcha yerga styles.css ni ishlatadigan qilish
+    class Media:
+        css = {
+            'all': ['store/styles.css']
+        }
 
 
 
