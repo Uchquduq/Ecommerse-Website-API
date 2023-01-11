@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.core.mail import mail_admins, send_mail, BadHeaderError, EmailMessage
+from django.core.mail import mail_admins, send_mail, BadHeaderError, EmailMessage, mail_admins
 from templated_mail.mail import BaseEmailMessage
 from django.db import transaction
 from django.db.models import Value, F, Func, ExpressionWrapper, DecimalField
@@ -129,5 +129,19 @@ def send_mail_message(request):
             settings.EMAIL_HOST_USER, 
             ['abduhakimovfazliddin2002@gmail.com'],
             fail_silently=False)
-            
+
     return render(request, "emails/send_email.html")
+
+def send_email_to_admins(request):
+    # need add to settings these
+    ADMINS = [
+        ('Mosh', 'admin@moshbuy.com')
+    ]
+    try:
+        mail_admins(
+            'subject',
+            'message',
+            html_message='message'
+        )
+    except BadHeaderError:
+        pass
