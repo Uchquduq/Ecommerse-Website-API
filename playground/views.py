@@ -121,12 +121,13 @@ from django.conf import settings
 
 def send_mail_message(request):
     message = request.POST.get('message')
-    
+
     if request.method == "POST":
-        send_mail('Contact Form', 
+        send_mail(
+            'Contact Form', 
             message, 
             settings.EMAIL_HOST_USER, 
             ['abduhakimovfazliddin2002@gmail.com'],
             fail_silently=False)
+            
     return render(request, "emails/send_email.html")
-

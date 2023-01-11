@@ -181,17 +181,18 @@ DJOSER = {
 
 AUTH_USER_MODEL = 'core.User'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'localhost'
-EMAIL_HOST_USER = 'abduhakimovfazliddin2002@gmail.com'
-EMAIL_HOST_PASSWORD = 'fazliddin2002'
-EMAIL_PORT = 2525
-DEFAULT_FROM_EMAIL = 'fazliddinabduhakimov9@gmail.com'
-
-# EMAIL_HOST = 'smtp.zoho.com'
-# EMAIL_HOST_USER = 'abduhakimovfazliddin2002@gmail.com'
-# EMAIL_HOST_PASSWORD = 'fazliddin2002'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'localhost'
+# EMAIL_HOST_USER = 'abduhakimovfazliddin2002@gmail.com'
+# EMAIL_HOST_PASSWORD = 'dsdfqmcjphlfgpnm'
+# EMAIL_PORT = 587
+# DEFAULT_FROM_EMAIL = 'fazliddinabduhakimov9@gmail.com'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'fazliddinabduhakimov9@gmail.com'
+EMAIL_HOST_PASSWORD = 'dsdfqmcjphlfgpnm'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = 'fazliddinabduhakimov9@gmail.com'
