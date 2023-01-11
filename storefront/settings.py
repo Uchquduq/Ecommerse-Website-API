@@ -196,3 +196,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'fazliddinabduhakimov9@gmail.com'
+
+CELERY_BROKEN_URL = 'redis://localhost:6379/1'
