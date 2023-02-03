@@ -109,17 +109,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "storefront.wsgi.application"
 
-#            Settings to mysql database
-DATABASES = {
+# Windows
 
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "storefront3",
-        "HOST": "localhost",
-        "USER": "root",
-        "PASSWORD": "fazliddin2002",
+#            Settings to mysql database
+# DATABASES = {
+
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "storefront3",
+#         "HOST": "localhost",
+#         "USER": "root",
+#         "PASSWORD": "fazliddin2002",
+#     }
+# }
+
+
+# Linux
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
